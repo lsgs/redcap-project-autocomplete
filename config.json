@@ -1,0 +1,45 @@
+{
+	"name": "Project Auto-Complete",
+	"description": "Daily cron task to mark projects as \"Completed\" aftr a specified number of days since the date of their last logged event.",
+	"namespace": "MCRI\\ProjectAutoComplete",
+	"authors": [
+		{
+			"name": "Luke Stevens",
+			"email": "luke.stevens@mcri.edu.au",
+			"institution": "Murdoch Children's Research Institute"
+		}
+	],
+    "framework-version": 12,
+    "crons": [
+        {
+            "cron_name": "extmod_project_autocomplete",
+            "cron_description": "Automatically mark projects as \"Complete\" once the specified number of days has elapsed since the last logged event.",
+            "method": "cron_entry",
+            "cron_frequency": "86400",
+            "cron_max_run_time": "600"
+        }
+    ],
+    "enable-every-page-hooks-on-system-pages": true,
+	"system-settings": [ 
+        {
+            "key": "inactive-threshold",
+            "name": "Inactivity threshold days (integer): mark project \"Complete\" this many days after a project's last logged event date",
+            "required": true,
+            "type": "text"
+        },
+        {
+            "key": "warn-offset",
+            "name": "Warn offset days (integer): show warning on My Projects page this many days before the inactivity threshold (i.e. use 0 for no warning)",
+            "required": true,
+            "type": "text"
+        },
+        {
+            "key": "ignore",
+            "name": "Ignore list: skip these projects, i.e. these projects will not be marked complete automatically",
+            "required": false,
+            "repeatable": true,
+            "type": "text",
+            "validation": "integer"
+        }
+    ]
+}
