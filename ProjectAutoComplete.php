@@ -68,7 +68,8 @@ class ProjectAutoComplete extends AbstractExternalModule
                     $jsObj = $this->getJavascriptModuleObjectName();
                     $pidsObj = array();
                     foreach ($projects as $pid => $attr) {
-                        $pidsObj[] = '{"pid":'.$pid.',"days":'.$attr['days_inactive'].'}';
+                        $daysToComplete = ($inactiveThreshold < $attr['days_inactive']) ? 0 : $inactiveThreshold - $attr['days_inactive'];
+                        $pidsObj[] = '{"pid":'.$pid.',"days_inactive":'.$attr['days_inactive'].',"days_to_complete":'.$daysToComplete.'}';
                     }
                     ?>
                     <style type="text/css">
@@ -81,10 +82,11 @@ class ProjectAutoComplete extends AbstractExternalModule
                     <script type="text/javascript">
                         /* Project Auto-Complete */
                         $(document).ready(function(){
-                            const placeholder = '|DAYS|';
+                            const placeholderInactive = '|INACTIVEDAYS|';
+                            const placeholderOffset = '|DAYSTOCOMPLETE|';
                             var module=<?=$jsObj?>;
                             module.warnpids = JSON.parse('[<?=\implode(',',$pidsObj)?>]');
-                            module.warnicon = '<span class="ExtModProjectAutoComplete" title="Last logged event '+placeholder+' days ago.\nProject will be marked completed in <?=$warnOffset?> days."><i class="far fa-hourglass-half ml-1"></i></span>';
+                            module.warnicon = '<span class="ExtModProjectAutoComplete" title="Last logged event '+placeholderInactive+' days ago.\nProject will be marked completed in '+placeholderOffset+' days."><i class="far fa-hourglass-half ml-1"></i></span>';
                             
                             module.warnpids.forEach(function(e){
                                 console.log(e);
@@ -92,7 +94,7 @@ class ProjectAutoComplete extends AbstractExternalModule
                                     .parents('tr').first()
                                     .find('td').last()
                                     .find('span').last()
-                                    .append(module.warnicon.replace(placeholder,e.days));
+                                    .append(module.warnicon.replace(placeholderInactive,e.days_inactive).replace(placeholderOffset,e.days_to_complete));
                             });
                         });
                     </script>
