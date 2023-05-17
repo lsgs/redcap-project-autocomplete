@@ -20,10 +20,13 @@ Daily cron task to mark projects as "Completed" aftr a specified number of days 
 
 The process can be tested from Control Center pages by appending some parameters to the query string of URLs.
 
-View a list of projects with last logged event that have reached the specified threshold:
+View a list of projects with last logged event that have reached the configured threshold:
 * `ControlCenter/index.php?project_autocomplete=1`
 
-View a list of projects with last logged event that have reached the specified threshold - and mark projects as "Complete":
+View a list of projects with last logged event that have reached the configured threshold - and mark projects as "Complete":
 * `ControlCenter/index.php?project_autocomplete=1&update=1`
+
+View a list of projects with last logged event that have reached the specified threshold (e.g. 365 days):
+* `ControlCenter/index.php?project_autocomplete=1&threshold=365`
 
 ********************************************************************************

@@ -1,6 +1,6 @@
 {
 	"name": "Project Auto-Complete",
-	"description": "Daily cron task to mark projects as \"Completed\" aftr a specified number of days since the date of their last logged event.",
+	"description": "Daily cron task to mark projects as \"Completed\" aftr a specified number of days since the date of their last logged event.<br>See documentation for how to perform Control Centre tests.",
 	"namespace": "MCRI\\ProjectAutoComplete",
 	"authors": [
 		{

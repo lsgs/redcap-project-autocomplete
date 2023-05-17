@@ -11,11 +11,12 @@ class ProjectAutoComplete extends AbstractExternalModule
 {
     public function cron_entry() {
         try {
-            $result = $this->run(true);
+            $inactiveThreshold = intval($this->getSystemSetting('inactive-threshold'));
+            $result = $this->run($inactiveThreshold, true);
         } catch (\Exception $ex) {
             $result = $ex->getMessage().PHP_EOL.$ex->getTraceAsString();
         }
-        $this->log($result);
+        $this->log(str_replace('pid=',PHP_EOL.'pid=',strip_tags($result)));
     }
 
     /**
@@ -28,12 +29,22 @@ class ProjectAutoComplete extends AbstractExternalModule
      */
     public function redcap_control_center() {
         if (!isset($_GET['project_autocomplete'])) return;
-        $update = (isset($_GET['update']));
+        
+        $update = (isset($_GET['update']) && (bool)$_GET['update']);
+
         try {
-            $result = $this->run($update);
+
+            $inactiveThreshold = intval($this->getSystemSetting('inactive-threshold'));
+            if (isset($_GET['threshold']) && intval($_GET['threshold']) > 0) {
+                $inactiveThreshold = intval($_GET['threshold']); // allow override of setting via query string
+            }
+
+            $result = $this->run($inactiveThreshold, $update);
+
         } catch (\Exception $ex) {
             $result = $ex->getMessage().PHP_EOL.$ex->getTraceAsString();
         }
+
         if (!empty($result)) {
             $result = str_replace("'", "\'", $result);
             ?>
@@ -104,8 +115,7 @@ class ProjectAutoComplete extends AbstractExternalModule
         }
     }
 
-    protected function run($update) {
-        $inactiveThreshold = intval($this->getSystemSetting('inactive-threshold'));
+    protected function run($inactiveThreshold, $update) {
         if ($inactiveThreshold < 1) return;
 
         // read projects inactive longer than threshold, not including those in the ignore list
@@ -124,10 +134,10 @@ class ProjectAutoComplete extends AbstractExternalModule
                     $sql = "update redcap_projects set completed_time = ? where project_id = ? limit 1";
                     $r = $this->query($sql, [ TODAY, $pid ]);
                     if ($r) {
-                        \REDCap::logEvent("Project marked as Completed", "project_id = $pid", str_replace('?',$pid,$sql), null, null, $pid);
+                        \REDCap::logEvent("Project marked as Completed (External Module Project Auto-Complete)", "project_id = $pid", str_replace('?',$pid,$sql), null, null, $pid);
                         $result .= "*Completed*";
                     } else {
-                        \REDCap::logEvent("Project mark Completed FAILED", "project_id = $pid", str_replace('?',$pid,$sql), null, null, $pid);
+                        \REDCap::logEvent("Project mark Completed FAILED (External Module Project Auto-Complete)", "project_id = $pid", str_replace('?',$pid,$sql), null, null, $pid);
                         $result .= "*UPDATE FAILED*";
                     }
                 }
