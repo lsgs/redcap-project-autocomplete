@@ -63,54 +63,54 @@ class ProjectAutoComplete extends AbstractExternalModule
      * Display warning of approaching auto-completion for projects on My Projects page.
      */
     public function redcap_every_page_top($project_id) {
-        if (is_null($project_id) && substr(PAGE, -9)=='index.php' && isset($_GET['action']) && $_GET['action']=='myprojects') {
-            $user = $this->getUser();
-            if (is_null($user)) return;
+        $isMyProjectsPage = (is_null($project_id) && substr(PAGE, -9)=='index.php' && isset($_GET['action']) && $_GET['action']=='myprojects');
+        if (!$isMyProjectsPage) return;
+        $user = $this->getUser();
+        if (is_null($user)) return;
 
-            // myprojects page: add warning prior toauto-completion
-            $inactiveThreshold = intval($this->getSystemSetting('inactive-threshold'));
-            $warnOffset = intval($this->getSystemSetting('warn-offset'));
+        // myprojects page: add warning prior to auto-completion
+        $inactiveThreshold = intval($this->getSystemSetting('inactive-threshold'));
+        $warnOffset = intval($this->getSystemSetting('warn-offset'));
 
-            if ($warnOffset > 0) {
-                $projects = $this->getProjectsFromThreshold($inactiveThreshold-$warnOffset, $user->getUsername());
+        if ($warnOffset > 0) {
+            $projects = $this->getProjectsFromThreshold($inactiveThreshold-$warnOffset, $user->getUsername());
 
-                if (count($projects) > 0) {
-                    $this->initializeJavascriptModuleObject();
-                    $jsObj = $this->getJavascriptModuleObjectName();
-                    $pidsObj = array();
-                    foreach ($projects as $pid => $attr) {
-                        $daysToComplete = ($inactiveThreshold < $attr['days_inactive']) ? 0 : $inactiveThreshold - $attr['days_inactive'];
-                        $pidsObj[] = '{"pid":'.$pid.',"days_inactive":'.$attr['days_inactive'].',"days_to_complete":'.$daysToComplete.'}';
-                    }
-                    ?>
-                    <style type="text/css">
-                        .ExtModProjectAutoComplete {
-                            font-family: "Open Sans",Helvetica,Arial,sans-serif;
-                            font-size: 10px;
-                            color: #777;
-                        }
-                    </style>
-                    <script type="text/javascript">
-                        /* Project Auto-Complete */
-                        $(document).ready(function(){
-                            const placeholderInactive = '|INACTIVEDAYS|';
-                            const placeholderOffset = '|DAYSTOCOMPLETE|';
-                            var module=<?=$jsObj?>;
-                            module.warnpids = JSON.parse('[<?=\implode(',',$pidsObj)?>]');
-                            module.warnicon = '<span class="ExtModProjectAutoComplete" title="Last logged event '+placeholderInactive+' days ago.\nProject will be marked completed in '+placeholderOffset+' days."><i class="far fa-hourglass-half ml-1"></i></span>';
-                            
-                            module.warnpids.forEach(function(e){
-                                console.log(e);
-                                $('a[href$="pid='+e.pid+'"]').first()
-                                    .parents('tr').first()
-                                    .find('td').last()
-                                    .find('span').last()
-                                    .append(module.warnicon.replace(placeholderInactive,e.days_inactive).replace(placeholderOffset,e.days_to_complete));
-                            });
-                        });
-                    </script>
-                    <?php
+            if (count($projects) > 0) {
+                $this->initializeJavascriptModuleObject();
+                $jsObj = $this->getJavascriptModuleObjectName();
+                $pidsObj = array();
+                foreach ($projects as $pid => $attr) {
+                    $daysToComplete = ($inactiveThreshold < $attr['days_inactive']) ? 0 : $inactiveThreshold - $attr['days_inactive'];
+                    $pidsObj[] = '{"pid":'.$pid.',"days_inactive":'.$attr['days_inactive'].',"days_to_complete":'.$daysToComplete.'}';
                 }
+                ?>
+                <style type="text/css">
+                    .ExtModProjectAutoComplete {
+                        font-family: "Open Sans",Helvetica,Arial,sans-serif;
+                        font-size: 10px;
+                        color: #777;
+                    }
+                </style>
+                <script type="text/javascript">
+                    /* Project Auto-Complete */
+                    $(document).ready(function(){
+                        const placeholderInactive = '|INACTIVEDAYS|';
+                        const placeholderOffset = '|DAYSTOCOMPLETE|';
+                        var module=<?=$jsObj?>;
+                        module.warnpids = JSON.parse('[<?=\implode(',',$pidsObj)?>]');
+                        module.warnicon = '<span class="ExtModProjectAutoComplete" title="Last logged event '+placeholderInactive+' days ago.\nProject will be marked completed in '+placeholderOffset+' days."><i class="far fa-hourglass-half ml-1"></i></span>';
+                        
+                        module.warnpids.forEach(function(e){
+                            console.log(e);
+                            $('a[href$="pid='+e.pid+'"]').first()
+                                .parents('tr').first()
+                                .find('td').last()
+                                .find('span').last()
+                                .append(module.warnicon.replace(placeholderInactive,e.days_inactive).replace(placeholderOffset,e.days_to_complete));
+                        });
+                    });
+                </script>
+                <?php
             }
         }
     }
