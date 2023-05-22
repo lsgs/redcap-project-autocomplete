@@ -16,7 +16,7 @@ class ProjectAutoComplete extends AbstractExternalModule
         } catch (\Exception $ex) {
             $result = $ex->getMessage().PHP_EOL.$ex->getTraceAsString();
         }
-        $this->log(str_replace('pid=',PHP_EOL.'pid=',strip_tags($result)));
+        $this->log(str_replace('pid=',PHP_EOL.'pid=',strip_tags($this->PREFIX.PHP_EOL.$result)));
     }
 
     /**
@@ -65,8 +65,12 @@ class ProjectAutoComplete extends AbstractExternalModule
     public function redcap_every_page_top($project_id) {
         $isMyProjectsPage = (is_null($project_id) && substr(PAGE, -9)=='index.php' && isset($_GET['action']) && $_GET['action']=='myprojects');
         if (!$isMyProjectsPage) return;
-        $user = $this->getUser();
-        if (is_null($user)) return;
+        try {
+            $user = $this->getUser();
+            if (is_null($user)) return;
+        } catch (\Throwable $t) {
+            return;
+        }
 
         // myprojects page: add warning prior to auto-completion
         $inactiveThreshold = intval($this->getSystemSetting('inactive-threshold'));
