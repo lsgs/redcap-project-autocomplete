@@ -30,6 +30,6 @@ View a list of projects with last logged event that have reached the specified t
 * `ControlCenter/index.php?project_autocomplete=1&threshold=365`
 
 Both view and update projects with last logged event that has reached the specified threshold (note this enables you to effectively switch off the automatic completion via the scheduled task and just operate manually):
-* `ControlCenter/index.php?project_autocomplete=1&threshold=365`
+* `ControlCenter/index.php?project_autocomplete=1&threshold=365&update=1`
 
 ********************************************************************************
