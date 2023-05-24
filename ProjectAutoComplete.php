@@ -21,16 +21,15 @@ class ProjectAutoComplete extends AbstractExternalModule
 
     /**
      * redcap_control_center()
-     * Facilitate dummy run of cron by appending 
-     *   ?project_autocomplete=1
-     * or
-     *   ?project_autocomplete=1&update=1
-     * to ControlCenter/index.php pages
+     * Facilitate manual run of cron by appending to ControlCenter page query strings:
+     *   ?project_autocomplete=1 or
+     *   ?project_autocomplete=1&threshold=1000 or
+     *   ?project_autocomplete=1&update=1 (superuser only)
      */
     public function redcap_control_center() {
         if (!isset($_GET['project_autocomplete'])) return;
         
-        $update = (isset($_GET['update']) && (bool)$_GET['update']);
+        $update = ($this->isSuperUser() && isset($_GET['update']) && (bool)$_GET['update']);
 
         try {
 
