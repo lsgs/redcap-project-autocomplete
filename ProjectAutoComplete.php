@@ -120,7 +120,7 @@ class ProjectAutoComplete extends AbstractExternalModule
     }
 
     protected function run($inactiveThreshold, $update) {
-        if ($inactiveThreshold < 1) return;
+        if ($inactiveThreshold < 1) return 'inactive threshold off';
 
         // read projects inactive longer than threshold, not including those in the ignore list
         $projects = $this->getProjectsFromThreshold($inactiveThreshold);
