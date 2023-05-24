@@ -6,7 +6,7 @@ Luke Stevens, Murdoch Children's Research Institute https://www.mcri.edu.au
 ********************************************************************************
 ## Summary
 
-Daily cron task to mark projects as "Completed" aftr a specified number of days since the date of their last logged event.
+Daily cron task to mark projects as "Completed" after a specified number of days since the date of their last logged event.
 
 ********************************************************************************
 ## Configuration
@@ -27,6 +27,9 @@ View a list of projects with last logged event that have reached the configured 
 * `ControlCenter/index.php?project_autocomplete=1&update=1`
 
 View a list of projects with last logged event that have reached the specified threshold (e.g. 365 days):
+* `ControlCenter/index.php?project_autocomplete=1&threshold=365`
+
+Both view and update projects with last logged event that has reached the specified threshold (note this enables you to effectively switch off the automatic completion via the scheduled task and just operate manually):
 * `ControlCenter/index.php?project_autocomplete=1&threshold=365`
 
 ********************************************************************************
