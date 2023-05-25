@@ -50,7 +50,7 @@ class ProjectAutoComplete extends AbstractExternalModule
             <script type="text/javascript">
                 /* Project Auto-Complete JavaScript */
                 $(document).ready(function(){
-                    simpleDialog('<?=$result?>', 'Project Auto-Complete Results');
+                    simpleDialog('<?=$this->escape($result)?>', 'Project Auto-Complete Results');
                 });
             </script>
             <?php
@@ -131,7 +131,7 @@ class ProjectAutoComplete extends AbstractExternalModule
             $result = "Incomplete projects >=$inactiveThreshold days since last event: ".count($projects)."<ol>";
 
             foreach ($projects as $pid => $attr) {
-                $result .= "<li>pid=$pid ({$attr['app_title']}); last event={$attr['last_event']} ({$attr['days_inactive']} days ago) ";
+                $result .= "<li>pid=$this->escape($pid) ({$this->escape($attr['app_title'])}); last event={$this->escape($attr['last_event'])} ({$this->escape($attr['days_inactive'])} days ago) ";
 
                 if ($update) {
                     $sql = "update redcap_projects set completed_time = ? where project_id = ? limit 1";
