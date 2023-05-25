@@ -84,7 +84,7 @@ class ProjectAutoComplete extends AbstractExternalModule
                 $pidsObj = array();
                 foreach ($projects as $pid => $attr) {
                     $daysToComplete = ($inactiveThreshold < $attr['days_inactive']) ? 0 : $inactiveThreshold - $attr['days_inactive'];
-                    $pidsObj[] = '{"pid":'.$pid.',"days_inactive":'.$attr['days_inactive'].',"days_to_complete":'.$daysToComplete.'}';
+                    $pidsObj[] = '{"pid":'.intval($pid).',"days_inactive":'.intval($attr['days_inactive']).',"days_to_complete":'.$daysToComplete.'}';
                 }
                 ?>
                 <style type="text/css">
@@ -131,7 +131,7 @@ class ProjectAutoComplete extends AbstractExternalModule
             $result = "Incomplete projects >=$inactiveThreshold days since last event: ".count($projects)."<ol>";
 
             foreach ($projects as $pid => $attr) {
-                $result .= "<li>pid=$this->escape($pid) ({$this->escape($attr['app_title'])}); last event={$this->escape($attr['last_event'])} ({$this->escape($attr['days_inactive'])} days ago) ";
+                $result .= "<li>pid={$this->escape($pid)} ({$this->escape($attr['app_title'])}); last event={$this->escape($attr['last_event'])} ({$this->escape($attr['days_inactive'])} days ago) ";
 
                 if ($update) {
                     $sql = "update redcap_projects set completed_time = ? where project_id = ? limit 1";
