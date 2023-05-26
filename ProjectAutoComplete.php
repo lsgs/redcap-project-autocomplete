@@ -50,7 +50,7 @@ class ProjectAutoComplete extends AbstractExternalModule
             <script type="text/javascript">
                 /* Project Auto-Complete JavaScript */
                 $(document).ready(function(){
-                    simpleDialog('<?=$this->escape($result)?>', 'Project Auto-Complete Results');
+                    simpleDialog('<?=\REDCap::filterHtml($result)?>', 'Project Auto-Complete Results');
                 });
             </script>
             <?php
