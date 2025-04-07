@@ -9,7 +9,7 @@
 			"institution": "Murdoch Children's Research Institute"
 		}
 	],
-    "framework-version": 12,
+    "framework-version": 16,
     "crons": [
         {
             "cron_name": "extmod_project_autocomplete",

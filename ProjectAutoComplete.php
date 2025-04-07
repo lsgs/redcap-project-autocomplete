@@ -62,6 +62,7 @@ class ProjectAutoComplete extends AbstractExternalModule
      * Display warning of approaching auto-completion for projects on My Projects page.
      */
     public function redcap_every_page_top($project_id) {
+        if (!$this->isAuthenticated()) return;
         $isMyProjectsPage = (is_null($project_id) && substr(PAGE, -9)=='index.php' && isset($_GET['action']) && $_GET['action']=='myprojects');
         if (!$isMyProjectsPage) return;
         try {
